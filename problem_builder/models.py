@@ -35,11 +35,17 @@ class Answer(models.Model):
     """
 
     class Meta:
-        unique_together = (('student_id', 'course_id', 'name'),)
+        unique_together = (
+            ('student_id', 'course_id', 'name'),
+            ('student_id', 'course_key', 'name'),
+        )
 
     name = models.CharField(max_length=50, db_index=True)
     student_id = models.CharField(max_length=32, db_index=True)
-    course_id = models.CharField(max_length=50, db_index=True)
+    # course_id is deprecated; it will be removed in next release.
+    course_id = models.CharField(max_length=50, db_index=True, blank=True, null=True, default=None)
+    # course_key is the new course_id replacement with extended max_length.
+    course_key = models.CharField(max_length=255, db_index=True)
     student_input = models.TextField(blank=True, default='')
     created_on = models.DateTimeField('created on', auto_now_add=True)
     modified_on = models.DateTimeField('modified on', auto_now=True)

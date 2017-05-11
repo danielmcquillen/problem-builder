@@ -126,7 +126,7 @@ function MCQBlock(runtime, element) {
 
             messageView.clearResult();
 
-            var choiceInputDOM = $('.choice-selector input[value="'+ result.submission +'"]');
+            var choiceInputDOM = $('.choice-selector input[value="'+ result.submission +'"]', element);
             var choiceDOM = choiceInputDOM.closest('.choice');
             var choiceResultDOM = $('.choice-result', choiceDOM);
             var choiceTipsDOM = $('.choice-tips', choiceDOM);
@@ -221,7 +221,9 @@ function MRQBlock(runtime, element) {
                 display_message(result.message, messageView, options.checkmark);
             }
 
-            $.each(result.choices, function(index, choice) {
+            // If user has never submitted an answer for this MRQ, `result` will be empty.
+            // So we need to fall back on an empty list for `result.choices` to avoid errors in the next step:
+            $.each(result.choices || [], function(index, choice) {
                 var choiceInputDOM = $('.choice input[value='+choice.value+']', element);
                 var choiceDOM = choiceInputDOM.closest('.choice');
                 var choiceResultDOM = $('.choice-result', choiceDOM);

@@ -76,13 +76,14 @@ class AnswerMixin(XBlockWithPreviewMixin, XBlockWithTranslationServiceMixin):
             raise ValueError('AnswerBlock.name field need to be set to a non-null/empty value')
 
         student_id = self._get_student_id()
-        course_id = self._get_course_id()
+        course_key = self._get_course_id()
 
         answer_data, _ = Answer.objects.get_or_create(
             student_id=student_id,
-            course_id=course_id,
+            course_key=course_key,
             name=name,
         )
+
         return answer_data
 
     @property
@@ -259,6 +260,13 @@ class AnswerBlock(SubmittingXBlockMixin, AnswerMixin, QuestionMixin, StudioEdita
         if template_id == 'studio_default':
             return {'data': {'name': uuid.uuid4().hex[:7]}}
         return {'metadata': {}, 'data': {}}
+
+    def student_view_data(self):
+        """
+        Returns a JSON representation of the student_view of this XBlock,
+        retrievable from the Course Block API.
+        """
+        return {'question': self.question}
 
 
 @XBlock.needs("i18n")
